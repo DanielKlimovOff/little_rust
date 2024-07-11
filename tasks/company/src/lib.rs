@@ -1,6 +1,9 @@
+use std::fmt::{self, Debug, Display};
+
+#[derive(Debug)]
 pub struct Unit {
     pub name: String,
-    pub people: Vec<String>,
+    people: Vec<String>,
 }
 
 impl Unit {
@@ -36,6 +39,13 @@ impl Unit {
     }
 }
 
+impl Display for Unit {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Unit '{}' ({}): {:?}", self.name, self.count_people(), self.people)
+    }
+}
+
+#[derive(Debug)]
 pub struct Company {
     pub name: String,
     pub units: Vec<Unit>,
@@ -122,23 +132,24 @@ impl Company {
     }
 
     pub fn transfer_person(&mut self, person_name: &str, unit_name: &str) -> Result<(), &'static str> {
-        // let current_unit;
         let try_find_person = self.find_person(person_name);
-        if try_find_person == None {
-            return Err("Can not find person");
-        } else {
-            // current_unit = try_find_person.unwrap();
-        }
+        let current_unit = match try_find_person {
+            Some(unit_name) => unit_name,
+            None => {
+                return Err("Can not find person")
+            },
+        };
 
-        // self.remove_person(current_unit, person_name)?;
+        self.remove_person(&current_unit, person_name)?;
         self.add_person_to_unit(unit_name, person_name)?;
         Ok(())
     }
 
-    pub fn find_person(&self, person_name: &str) -> Option<&str> {
+    /// This is huge kostil'. TODO change function to return Option<&str> and complete all tests 
+    pub fn find_person(&self, person_name: &str) -> Option<String> {
         for unit in &self.units {
             if unit.people.contains(&String::from(person_name)) {
-                return Some(&unit.name);
+                return Some(unit.name.clone());
             }
         }
         None
@@ -160,6 +171,12 @@ impl Company {
             }
         }
         Err("Can not find unit")
+    }
+}
+
+impl Display for Company {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Company '{}' ({}): {:?}", self.name, self.count_people(), self.list_of_units())
     }
 }
 
@@ -329,7 +346,7 @@ mod tests {
         let count_developers = capital_c.count_people_in_unit("Developers").unwrap();
         assert_eq!(count_developers, 1);
 
-        capital_c.transfer_person("Daniel", "Developers");
+        capital_c.transfer_person("Daniel", "Developers").unwrap();
 
         let count_people = capital_c.count_people();
         assert_eq!(count_people, 3);
