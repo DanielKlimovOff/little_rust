@@ -131,17 +131,9 @@ impl Company {
         Ok(())
     }
 
-    pub fn transfer_person(&mut self, person_name: &str, unit_name: &str) -> Result<(), &'static str> {
-        let try_find_person = self.find_person(person_name);
-        let current_unit = match try_find_person {
-            Some(unit_name) => unit_name,
-            None => {
-                return Err("Can not find person")
-            },
-        };
-
-        self.remove_person(&current_unit, person_name)?;
-        self.add_person_to_unit(unit_name, person_name)?;
+    pub fn transfer_person(&mut self, old_unit_name: &str, person_name: &str, new_unit_name: &str) -> Result<(), &'static str> {
+        self.remove_person(old_unit_name, person_name)?;
+        self.add_person_to_unit(new_unit_name, person_name)?;
         Ok(())
     }
 
@@ -346,7 +338,7 @@ mod tests {
         let count_developers = capital_c.count_people_in_unit("Developers").unwrap();
         assert_eq!(count_developers, 1);
 
-        capital_c.transfer_person("Daniel", "Developers").unwrap();
+        capital_c.transfer_person("Workers", "Daniel", "Developers").unwrap();
 
         let count_people = capital_c.count_people();
         assert_eq!(count_people, 3);

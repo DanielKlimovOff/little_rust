@@ -1,18 +1,18 @@
-0 rename
-1 add_unit
-2 rename_unit
-3 remove_unit
+1 rename
+2 add_unit
+3 rename_unit
+4 remove_unit
 = count_units
 = list_of_units
 = count_people_in_unit
 = count_people
-4 add_person_to_unit
+5 add_person_to_unit
 = list_of_people_in_unit
-5 remove_person
-6 transfer_person
-7 find_person
-8 company_info
-9 unit_info
+6 remove_person
+7 transfer_person
+8 find_person
+= company_info
+= unit_info
 
 
 

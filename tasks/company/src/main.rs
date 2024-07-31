@@ -3,7 +3,7 @@ use company;
 
 fn main() {
     let mut company = company::Company::new("Mango");
-    let debug_flag = true;
+    let mut debug_flag = true;
 
     loop {
         if debug_flag {
@@ -73,6 +73,19 @@ fn main() {
                 }
             },
             4 => {
+                println!("Enter unit name which you whant to remove:");
+                let mut unit_name = String::new();
+                io::stdin()
+                    .read_line(&mut unit_name)
+                    .expect("Fail to read unit name(");
+                unit_name = String::from(unit_name.trim());
+
+                match company.remove_unit(&unit_name) {
+                    Ok(_) => println!("Remove unit '{}'", unit_name),
+                    Err(message) => println!("Fail {}, try again", message),
+                }
+            },
+            5 => {
                 println!("Enter unit name which add new person:");
                 let mut unit_name = String::new();
                 io::stdin()
@@ -92,8 +105,8 @@ fn main() {
                     Err(message) => println!("Fail {}, try again", message),
                 }
             },
-            5 => {
-                println!("Enter unit name which add new person:");
+            6 => {
+                println!("Enter unit name which remove person:");
                 let mut unit_name = String::new();
                 io::stdin()
                     .read_line(&mut unit_name)
@@ -108,11 +121,54 @@ fn main() {
                 person_name = String::from(person_name.trim());
 
                 match company.remove_person(&unit_name, &person_name) {
-                    Ok(_) => println!("Add new person '{}' to unit '{}'", person_name, unit_name),
+                    Ok(_) => println!("Remove person '{}' from unit '{}'", person_name, unit_name),
                     Err(message) => println!("Fail {}, try again", message),
                 }
             },
-            
+            7 => {
+                println!("Enter unit name which have person to transfer:");
+                let mut old_unit_name = String::new();
+                io::stdin()
+                    .read_line(&mut old_unit_name)
+                    .expect("Fail to read unit name(");
+                old_unit_name = String::from(old_unit_name.trim());
+
+                println!("Enter person name:");
+                let mut person_name = String::new();
+                io::stdin()
+                    .read_line(&mut person_name)
+                    .expect("Fail to read person name(");
+                person_name = String::from(person_name.trim());
+
+                println!("Enter unit name:");
+                let mut new_unit_name = String::new();
+                io::stdin()
+                    .read_line(&mut new_unit_name)
+                    .expect("Fail to read unit name(");
+                new_unit_name = String::from(new_unit_name.trim());
+
+                match company.transfer_person(&old_unit_name, &person_name, &new_unit_name) {
+                    Ok(_) => println!("Transfer person '{}' to unit '{}'", person_name, new_unit_name),
+                    Err(message) => println!("Fail {}, try again", message),
+                }
+            },
+            8 => {
+                println!("Enter person name:");
+                let mut person_name = String::new();
+                io::stdin()
+                    .read_line(&mut person_name)
+                    .expect("Fail to read person name(");
+                person_name = String::from(person_name.trim());
+
+                match company.find_person(&person_name){
+                    Some(unit_name) => println!("Find person '{}' in unit '{}'", &person_name, unit_name),
+                    None => println!("Fail person not found, try again"),
+                }
+            },
+            9 => {
+                println!("Switch debug mode");
+                debug_flag = !debug_flag;
+            }
             _ => println!("You enter wrong command, try again"),
         }
     }
